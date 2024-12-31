@@ -35,4 +35,27 @@ app.post('/todos', async (c) => {
 	}
 });
 
+//更新
+app.put('/todos/:id', async (c) => {
+	const id = c.req.param('id');
+	const { title } = await c.req.json();
+	try {
+		const { results } = await c.env.DB.prepare('UPDATE todos SET title = ? WHERE id = ?').bind(title, id).all();
+		return c.json(results);
+	} catch (e) {
+		return c.json({ error: 'Todo not found' }, 500);
+	}
+});
+
+//削除
+app.delete('/todos/:id', async (c) => {
+	const id = c.req.param('id');
+	try {
+		const { results } = await c.env.DB.prepare('DELETE FROM todos WHERE id = ?').bind(id).all();
+		return c.json(results);
+	} catch (e) {
+		return c.json({ error: 'Todo not found' }, 500);
+	}
+});
+
 export default app;
