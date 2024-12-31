@@ -24,15 +24,4 @@ app.get('/todos', async (c) => {
 	}
 });
 
-//作成
-app.post('/todos', async (c) => {
-	const { title } = await c.req.json();
-	try {
-		const { results } = await c.env.DB.prepare('INSERT INTO todos (title) VALUES (?)').bind(title).all();
-		return c.json(results);
-	} catch (e) {
-		return c.json({ error: 'Todo not found' }, 500);
-	}
-});
-
 export default app;
