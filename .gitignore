@@ -1,5 +1,6 @@
 # Logs
 
+.wrangler/
 logs
 _.log
 npm-debug.log_
