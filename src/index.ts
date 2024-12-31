@@ -1,18 +1,38 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.toml`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { Hono } from 'hono';
+import { Bindings } from './types';
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
-	},
-} satisfies ExportedHandler<Env>;
+const app = new Hono<{ Bindings: Bindings }>().basePath('/api');
+
+//1件取得
+app.get('/todos/:id', async (c) => {
+    const id = c.req.param('id');
+	try {
+		const { results } = await c.env.DB.prepare('SELECT * FROM todos WHERE id = ?').bind(id).all();
+		return c.json(results);
+	} catch (e) {
+		return c.json({ error: 'Todo not found' }, 500);
+	}
+});
+
+//全件取得
+app.get('/todos', async (c) => {
+	try {
+		const { results } = await c.env.DB.prepare('SELECT * FROM todos').all();
+		return c.json(results);
+	} catch (e) {
+		return c.json({ error: 'Todo not found' }, 500);
+	}
+});
+
+//作成
+app.post('/todos', async (c) => {
+	const { title } = await c.req.json();
+	try {
+		const { results } = await c.env.DB.prepare('INSERT INTO todos (title) VALUES (?)').bind(title).all();
+		return c.json(results);
+	} catch (e) {
+		return c.json({ error: 'Todo not found' }, 500);
+	}
+});
+
+export default app;
