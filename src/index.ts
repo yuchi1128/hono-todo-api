@@ -47,4 +47,15 @@ app.put('/todos/:id', async (c) => {
 	}
 });
 
+//削除
+app.delete('/todos/:id', async (c) => {
+	const id = c.req.param('id');
+	try {
+		const { results } = await c.env.DB.prepare('DELETE FROM todos WHERE id = ?').bind(id).all();
+		return c.json(results);
+	} catch (e) {
+		return c.json({ error: 'Todo not found' }, 500);
+	}
+});
+
 export default app;
