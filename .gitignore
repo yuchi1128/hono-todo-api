@@ -1,5 +1,7 @@
 # Logs
 
+wrangler.toml
+
 .wrangler/
 logs
 _.log
