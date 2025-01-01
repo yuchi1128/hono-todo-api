@@ -1,9 +1,0 @@
-name = "simple-todo-api"
-main = "src/index.ts"
-compatibility_date = "2024-12-30"
-compatibility_flags = ["nodejs_compat"]
-
-[[d1_databases]]
-binding = "DB"
-database_name = "todo-api"
-database_id = "f826dd99-67d4-45dd-9070-78863fba5ccb"
